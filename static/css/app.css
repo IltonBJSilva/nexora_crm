@@ -70,9 +70,19 @@ body {
     overflow: hidden;
 }
 
+body.is-mobile-nav-open {
+    overflow: hidden;
+}
+
 a {
     color: inherit;
     text-decoration: none;
+}
+
+.mobile-topbar,
+.mobile-overlay,
+.sidebar__close {
+    display: none;
 }
 
 .shell {
@@ -732,14 +742,118 @@ html[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indic
 }
 
 @media (max-width: 1200px) {
-    .shell,
     .split {
         grid-template-columns: 1fr;
     }
 
+    .mobile-topbar {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 50;
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr) 48px;
+        align-items: center;
+        gap: 12px;
+        min-height: 64px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+    }
+
+    .mobile-topbar__toggle,
+    .mobile-topbar__theme,
+    .sidebar__close {
+        width: 44px;
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface-mid);
+        color: var(--text);
+        cursor: pointer;
+    }
+
+    .mobile-topbar__toggle {
+        padding: 0;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .mobile-topbar__toggle span {
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+    }
+
+    .mobile-topbar__brand {
+        min-width: 0;
+        font: 700 1rem/1.1 "Segoe Print", cursive;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mobile-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 39;
+        border: 0;
+        background: rgba(6, 8, 12, 0.46);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+    }
+
+    body.is-mobile-nav-open .mobile-overlay {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
     .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 40;
+        width: min(86vw, 340px);
+        height: 100dvh;
+        padding: 12px;
+        transform: translateX(-110%);
+        transition: transform 220ms ease;
+    }
+
+    body.is-mobile-nav-open .sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar__inner {
+        position: relative;
+        padding-top: 76px;
+    }
+
+    .sidebar__close {
+        position: absolute;
+        top: 18px;
+        right: 14px;
+    }
+
+    .shell {
+        display: block;
         height: auto;
-        padding: 14px 14px 0;
+    }
+
+    .main {
+        height: auto;
+        min-height: 100dvh;
+        overflow: visible;
+        padding: 92px 14px 28px;
     }
 
     .stat-grid,
@@ -747,24 +861,9 @@ html[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indic
     .module-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .main {
-        height: auto;
-        overflow: visible;
-        padding: 18px 14px 28px;
-    }
-
-    body {
-        overflow: auto;
-    }
 }
 
 @media (max-width: 720px) {
-    .main,
-    .sidebar {
-        padding: 18px;
-    }
-
     .hero,
     .panel {
         padding: 18px;
@@ -783,15 +882,50 @@ html[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indic
         align-items: start;
     }
 
-    .sidebar {
-        padding: 12px;
+    .hero__actions,
+    .search,
+    .modal__actions {
+        width: 100%;
     }
 
-    .sidebar__inner {
-        padding: 18px 12px 22px;
+    .panel__header,
+    .record-card__top,
+    .record-card__actions,
+    .form-actions,
+    .modal__actions {
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .sidebar-group__summary {
         padding-inline: 2px;
+    }
+
+    .record-card__actions .text-link,
+    .record-card__actions .action-link-button,
+    .form-actions .button,
+    .modal__actions .button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .main {
+        padding: 92px 12px 22px;
+    }
+
+    .mobile-topbar {
+        left: 10px;
+        right: 10px;
+        min-height: 58px;
+        padding: 8px 10px;
+        border-radius: 18px;
+    }
+
+    .mobile-topbar__brand {
+        font-size: 0.92rem;
+    }
+
+    .modal {
+        width: calc(100% - 24px);
     }
 }

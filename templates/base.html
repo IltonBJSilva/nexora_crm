@@ -18,9 +18,20 @@
     <script src="{% static 'js/sidebar.js' %}" defer></script>
 </head>
 <body>
+    <div class="mobile-topbar">
+        <button class="mobile-topbar__toggle" type="button" data-mobile-nav-open aria-label="Abrir navegacao">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a class="mobile-topbar__brand" href="{% url 'dashboard' %}">Nexora CRM</a>
+        <button class="mobile-topbar__theme" type="button" data-theme-toggle-mobile aria-label="Trocar tema">◐</button>
+    </div>
+    <button class="mobile-overlay" type="button" data-mobile-overlay aria-label="Fechar navegacao"></button>
     <div class="shell">
         <aside class="sidebar">
             <div class="sidebar__inner">
+                <button class="sidebar__close" type="button" data-mobile-nav-close aria-label="Fechar navegacao">×</button>
                 <a class="brand" href="{% url 'dashboard' %}">
                     <span class="brand__mark">N</span>
                     <div>

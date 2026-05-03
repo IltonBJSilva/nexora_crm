@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const root = document.documentElement;
     const toggleButton = document.querySelector("[data-theme-toggle]");
+    const mobileThemeButton = document.querySelector("[data-theme-toggle-mobile]");
     const toggleLabel = document.querySelector("[data-theme-label]");
     const toggleIcon = document.querySelector("[data-theme-icon]");
     const storageKey = "nexora-theme";
@@ -17,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (toggleIcon) {
             toggleIcon.textContent = isLight ? "☾" : "◐";
         }
+        if (mobileThemeButton) {
+            mobileThemeButton.textContent = isLight ? "☾" : "◐";
+        }
         toggleButton.setAttribute("aria-pressed", String(isLight));
     };
 
@@ -28,6 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
         root.setAttribute("data-theme", nextTheme);
         localStorage.setItem(storageKey, nextTheme);
         updateThemeButton(nextTheme);
+    });
+
+    mobileThemeButton?.addEventListener("click", () => {
+        toggleButton.click();
     });
 
     const deleteModal = document.querySelector("[data-delete-modal]");
@@ -69,4 +77,37 @@ document.addEventListener("DOMContentLoaded", () => {
             deleteForm.setAttribute("action", "");
         });
     }
+
+    const body = document.body;
+    const mobileOpenButton = document.querySelector("[data-mobile-nav-open]");
+    const mobileCloseButton = document.querySelector("[data-mobile-nav-close]");
+    const mobileOverlay = document.querySelector("[data-mobile-overlay]");
+    const mobileBreakpoint = window.matchMedia("(max-width: 1200px)");
+
+    const closeMobileNav = () => {
+        body.classList.remove("is-mobile-nav-open");
+    };
+
+    const openMobileNav = () => {
+        if (!mobileBreakpoint.matches) {
+            return;
+        }
+        body.classList.add("is-mobile-nav-open");
+    };
+
+    mobileOpenButton?.addEventListener("click", openMobileNav);
+    mobileCloseButton?.addEventListener("click", closeMobileNav);
+    mobileOverlay?.addEventListener("click", closeMobileNav);
+
+    mobileBreakpoint.addEventListener("change", (event) => {
+        if (!event.matches) {
+            closeMobileNav();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeMobileNav();
+        }
+    });
 });
