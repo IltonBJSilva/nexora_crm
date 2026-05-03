@@ -5,7 +5,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Nexora CRM{% endblock %}</title>
+    <script>
+        (function () {
+            var savedTheme = localStorage.getItem("nexora-theme");
+            if (savedTheme) {
+                document.documentElement.setAttribute("data-theme", savedTheme);
+            }
+        }());
+    </script>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <script src="{% static 'js/app.js' %}" defer></script>
     <script src="{% static 'js/sidebar.js' %}" defer></script>
 </head>
 <body>
@@ -30,6 +39,11 @@
                         <span>Admin</span>
                     </a>
                 </nav>
+
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Trocar tema">
+                    <span class="theme-toggle__icon" data-theme-icon>◐</span>
+                    <span class="theme-toggle__label" data-theme-label>Tema claro</span>
+                </button>
 
                 <div class="sidebar-search">
                     <label class="sidebar-search__label" for="sidebar-search">

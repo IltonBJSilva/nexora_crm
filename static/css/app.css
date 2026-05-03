@@ -9,6 +9,45 @@
     --accent-soft: rgba(247, 185, 85, 0.18);
     --danger: #ef6d62;
     --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    --surface-soft: rgba(255, 255, 255, 0.03);
+    --surface-mid: rgba(255, 255, 255, 0.04);
+    --surface-strong: rgba(255, 255, 255, 0.05);
+    --surface-shell: rgba(8, 9, 11, 0.9);
+    --surface-card: rgba(255, 255, 255, 0.03);
+    --count-bg: rgba(255, 255, 255, 0.05);
+    --track-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.07));
+    --thumb-bg: linear-gradient(180deg, rgba(247, 185, 85, 0.9), rgba(255, 141, 86, 0.75));
+    --thumb-bg-hover: linear-gradient(180deg, rgba(255, 200, 116, 0.95), rgba(255, 141, 86, 0.9));
+    --body-gradient-a: rgba(247, 185, 85, 0.08);
+    --body-gradient-b: rgba(95, 173, 255, 0.06);
+    --input-text: var(--text);
+    --input-placeholder: rgba(157, 155, 152, 0.82);
+}
+
+html[data-theme="light"] {
+    --bg: #f2ede4;
+    --bg-soft: #e6ddd0;
+    --panel: rgba(255, 250, 244, 0.94);
+    --line: rgba(76, 57, 29, 0.14);
+    --text: #2b241d;
+    --muted: #6d645a;
+    --accent: #ce7c32;
+    --accent-soft: rgba(206, 124, 50, 0.18);
+    --danger: #c94a44;
+    --shadow: 0 24px 60px rgba(104, 75, 44, 0.14);
+    --surface-soft: rgba(92, 67, 37, 0.04);
+    --surface-mid: rgba(92, 67, 37, 0.06);
+    --surface-strong: rgba(92, 67, 37, 0.08);
+    --surface-shell: rgba(250, 245, 237, 0.92);
+    --surface-card: rgba(92, 67, 37, 0.045);
+    --count-bg: rgba(92, 67, 37, 0.08);
+    --track-bg: linear-gradient(180deg, rgba(92, 67, 37, 0.06), rgba(92, 67, 37, 0.12));
+    --thumb-bg: linear-gradient(180deg, rgba(206, 124, 50, 0.9), rgba(232, 164, 84, 0.8));
+    --thumb-bg-hover: linear-gradient(180deg, rgba(194, 111, 39, 0.95), rgba(232, 164, 84, 0.92));
+    --body-gradient-a: rgba(206, 124, 50, 0.12);
+    --body-gradient-b: rgba(95, 173, 255, 0.1);
+    --input-text: #2b241d;
+    --input-placeholder: rgba(109, 100, 90, 0.88);
 }
 
 * {
@@ -23,8 +62,8 @@ body {
 body {
     margin: 0;
     background:
-        radial-gradient(circle at top left, rgba(247, 185, 85, 0.08), transparent 24%),
-        radial-gradient(circle at bottom right, rgba(95, 173, 255, 0.06), transparent 28%),
+        radial-gradient(circle at top left, var(--body-gradient-a), transparent 24%),
+        radial-gradient(circle at bottom right, var(--body-gradient-b), transparent 28%),
         var(--bg);
     color: var(--text);
     font-family: "Trebuchet MS", "Segoe UI", sans-serif;
@@ -55,8 +94,8 @@ a {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 28px;
     background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 24%),
-        rgba(8, 9, 11, 0.9);
+        linear-gradient(180deg, var(--surface-soft), transparent 24%),
+        var(--surface-shell);
     backdrop-filter: blur(14px);
     scrollbar-width: thin;
     scrollbar-color: rgba(247, 185, 85, 0.55) rgba(255, 255, 255, 0.04);
@@ -165,9 +204,13 @@ a {
     min-width: 28px;
     padding: 4px 8px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--count-bg);
     color: rgba(245, 241, 235, 0.74);
     text-align: center;
+}
+
+html[data-theme="light"] .sidebar-link__count {
+    color: rgba(43, 36, 29, 0.72);
 }
 
 .sidebar-group a {
@@ -190,12 +233,47 @@ a {
 .sidebar-search__hint {
     margin-left: 8px;
     padding: 2px 8px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--line);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface-mid);
     font-size: 0.68rem;
     letter-spacing: 0.04em;
     text-transform: none;
+}
+
+.theme-toggle {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface-mid);
+    color: var(--text);
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    border-color: rgba(247, 185, 85, 0.25);
+    background: linear-gradient(135deg, var(--accent-soft), var(--surface-mid));
+}
+
+.theme-toggle__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.theme-toggle__label {
+    text-align: left;
+    font-weight: 700;
 }
 
 .sidebar-search__input {
@@ -286,7 +364,7 @@ a {
     padding: 12px 14px;
     border: 1px solid var(--line);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface-mid);
 }
 
 .hero,
@@ -392,7 +470,7 @@ a {
 .roadmap-stage {
     border: 1px solid var(--line);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--surface-card);
     transition: 180ms ease;
 }
 
@@ -522,13 +600,13 @@ a {
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--text);
+    background: var(--surface-mid);
+    color: var(--input-text);
     padding: 12px 14px;
 }
 
 .input::placeholder {
-    color: rgba(157, 155, 152, 0.82);
+    color: var(--input-placeholder);
 }
 
 .input--textarea {
@@ -560,19 +638,19 @@ a {
 .sidebar__inner::-webkit-scrollbar-track {
     margin: 10px 0;
     border-radius: 999px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.07));
+    background: var(--track-bg);
 }
 
 .sidebar__inner::-webkit-scrollbar-thumb {
     border: 2px solid transparent;
     border-radius: 999px;
-    background: linear-gradient(180deg, rgba(247, 185, 85, 0.9), rgba(255, 141, 86, 0.75));
+    background: var(--thumb-bg);
     background-clip: padding-box;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .sidebar__inner::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, rgba(255, 200, 116, 0.95), rgba(255, 141, 86, 0.9));
+    background: var(--thumb-bg-hover);
     background-clip: padding-box;
 }
 
