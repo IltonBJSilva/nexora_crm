@@ -180,6 +180,35 @@ div.breadcrumbs {
     font-size: 1.4rem;
 }
 
+.nexora-admin-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.nexora-admin-shortcuts a {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+    border: 1px solid var(--nexora-line);
+    border-radius: 22px;
+    background: var(--nexora-panel);
+    box-shadow: var(--nexora-shadow);
+}
+
+.nexora-admin-shortcuts span {
+    color: var(--nexora-accent);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.nexora-admin-shortcuts strong {
+    font-size: 1rem;
+    line-height: 1.35;
+}
+
 #content-main,
 #changelist,
 .submit-row,
@@ -379,6 +408,10 @@ toggle-nav-sidebar,
 
     .nexora-admin-stats {
         grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .nexora-admin-shortcuts {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -14,7 +14,8 @@
     </div>
 </section>
 
-<section class="split">
+<section class="split {% if not can_add %}split--single{% endif %}">
+    {% if can_add %}
     <article class="panel">
         <div class="panel__header">
             <div>
@@ -37,6 +38,7 @@
             </div>
         </form>
     </article>
+    {% endif %}
 
     <article class="panel">
         <div class="panel__header">
@@ -54,16 +56,20 @@
                     <div class="record-card__top">
                         <strong>{{ record.title }}</strong>
                         <div class="record-card__actions">
-                            <a class="text-link" href="{% url 'entity-update' entity_slug=entity_slug pk=record.object.pk %}">editar</a>
-                            <button
-                                class="action-link-button text-link text-link--danger"
-                                type="button"
-                                data-delete-trigger
-                                data-delete-url="{% url 'entity-delete' entity_slug=entity_slug pk=record.object.pk %}"
-                                data-delete-label="{{ record.title }}"
-                            >
-                                excluir
-                            </button>
+                            {% if can_change %}
+                                <a class="text-link" href="{% url 'entity-update' entity_slug=entity_slug pk=record.object.pk %}">editar</a>
+                            {% endif %}
+                            {% if can_delete %}
+                                <button
+                                    class="action-link-button text-link text-link--danger"
+                                    type="button"
+                                    data-delete-trigger
+                                    data-delete-url="{% url 'entity-delete' entity_slug=entity_slug pk=record.object.pk %}"
+                                    data-delete-label="{{ record.title }}"
+                                >
+                                    excluir
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="mini-card__meta">

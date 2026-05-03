@@ -1,5 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group, User
 
+from .access import ROLE_DEFINITIONS, apply_role_to_user, sync_role_groups
 from .models import (
     AcademicProject,
     AcademicTask,
@@ -16,6 +20,7 @@ from .models import (
     RoadmapStep,
     SemesterPlan,
     TechnicalLearning,
+    UserProfile,
     WorkProject,
     WorkTask,
 )
@@ -23,6 +28,72 @@ from .models import (
 admin.site.site_header = "Nexora Control Center"
 admin.site.site_title = "Nexora Admin"
 admin.site.index_title = "Operacao interna do CRM"
+admin.site.unregister(User)
+admin.site.unregister(Group)
+
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    extra = 0
+    fieldsets = (
+        ("Perfil Nexora", {"fields": ("role", "job_title", "notes")}),
+    )
+
+
+@admin.register(User)
+class UserAdmin(BaseUserAdmin):
+    inlines = [UserProfileInline]
+    list_display = ("username", "email", "first_name", "last_name", "role_label", "is_staff", "is_active")
+    list_filter = ("is_staff", "is_superuser", "is_active", "groups", "profile__role")
+
+    def role_label(self, obj):
+        profile = getattr(obj, "profile", None)
+        return profile.get_role_display() if profile else "Sem perfil"
+
+    role_label.short_description = "Tipo"
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        apply_role_to_user(obj)
+
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin):
+    list_display = ("name", "member_count", "permission_count", "role_description")
+    search_fields = ("name",)
+
+    def member_count(self, obj):
+        return obj.user_set.count()
+
+    member_count.short_description = "Usuarios"
+
+    def permission_count(self, obj):
+        return obj.permissions.count()
+
+    permission_count.short_description = "Permissoes"
+
+    def role_description(self, obj):
+        for definition in ROLE_DEFINITIONS.values():
+            if definition["group_name"] == obj.name:
+                return definition["description"]
+        return "Grupo personalizado"
+
+    role_description.short_description = "Resumo"
+
+    actions = ["sync_nexora_groups"]
+
+    @admin.action(description="Sincronizar grupos e permissoes da Nexora")
+    def sync_nexora_groups(self, request, queryset):
+        sync_role_groups()
+        self.message_user(request, "Grupos e permissoes sincronizados.")
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "role", "job_title", "updated_at")
+    list_filter = ("role",)
+    search_fields = ("user__username", "user__email", "job_title", "notes")
 
 
 @admin.register(Discipline)

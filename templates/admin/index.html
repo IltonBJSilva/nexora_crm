@@ -23,5 +23,19 @@
             </article>
         </div>
     </section>
+    <section class="nexora-admin-shortcuts">
+        <a href="{% url 'admin:auth_user_changelist' %}">
+            <span>Usuarios</span>
+            <strong>Gerenciar contas, staff e super admins</strong>
+        </a>
+        <a href="{% url 'admin:auth_group_changelist' %}">
+            <span>Grupos</span>
+            <strong>Configurar os grupos e permissoes da Nexora</strong>
+        </a>
+        <a href="{% url 'admin:core_userprofile_changelist' %}">
+            <span>Perfis</span>
+            <strong>Definir tipo de usuario e papel operacional</strong>
+        </a>
+    </section>
     {{ block.super }}
 {% endblock %}

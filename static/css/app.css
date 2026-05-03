@@ -50,6 +50,18 @@ html[data-theme="light"] {
     --input-placeholder: rgba(109, 100, 90, 0.88);
 }
 
+html[data-theme="light"] .brand small,
+html[data-theme="light"] .muted,
+html[data-theme="light"] .mini-card__meta,
+html[data-theme="light"] .help,
+html[data-theme="light"] .hero__copy,
+html[data-theme="light"] .sidebar-search__label,
+html[data-theme="light"] .sidebar-group__title,
+html[data-theme="light"] .field label,
+html[data-theme="light"] .record-card p {
+    color: var(--muted);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -285,6 +297,31 @@ a {
 .sidebar-search__input {
     min-height: 48px;
     padding-right: 16px;
+}
+
+.sidebar-user {
+    display: grid;
+    gap: 12px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+}
+
+.sidebar-user__meta {
+    display: grid;
+    gap: 4px;
+}
+
+.sidebar-user__meta strong {
+    font-size: 0.96rem;
+}
+
+.sidebar-user__meta small {
+    color: var(--muted);
+}
+
+.sidebar-user__logout {
+    width: 100%;
 }
 
 .sidebar-group--collapsible {
@@ -582,6 +619,10 @@ a {
     gap: 24px;
 }
 
+.split--single {
+    grid-template-columns: 1fr;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -692,6 +733,42 @@ html[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indic
     gap: 12px;
     justify-content: flex-end;
     margin-top: 18px;
+}
+
+.auth-page {
+    overflow: auto;
+}
+
+.auth-shell {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+}
+
+.auth-card {
+    width: min(100%, 520px);
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+}
+
+.auth-card__brand {
+    display: flex;
+    align-items: start;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.auth-card__brand h1 {
+    margin: 6px 0 0;
+    font: 700 clamp(2rem, 4vw, 3.6rem)/0.98 "Segoe Print", cursive;
+}
+
+.form-grid--single {
+    grid-template-columns: 1fr;
 }
 
 .sidebar__inner::-webkit-scrollbar {
@@ -927,5 +1004,18 @@ html[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indic
 
     .modal {
         width: calc(100% - 24px);
+    }
+
+    .auth-shell {
+        padding: 14px;
+    }
+
+    .auth-card {
+        padding: 20px;
+        border-radius: 24px;
+    }
+
+    .auth-card__brand {
+        flex-direction: column;
     }
 }

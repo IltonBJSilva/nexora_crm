@@ -6,7 +6,10 @@ from core import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.DashboardView.as_view(), name="dashboard"),
+    path("", views.AuthRedirectView.as_view(), name="home"),
+    path("login/", views.CRMLoginView.as_view(), name="login"),
+    path("logout/", views.CRMLogoutView.as_view(), name="logout"),
+    path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("workspace/", views.WorkspaceIndexView.as_view(), name="workspace"),
     path("workspace/<slug:entity_slug>/", views.EntityListView.as_view(), name="entity-list"),
     path("workspace/<slug:entity_slug>/<int:pk>/editar/", views.EntityUpdateView.as_view(), name="entity-update"),

@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login | Nexora CRM</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-card">
+            <div class="auth-card__brand">
+                <span class="brand__mark">N</span>
+                <div>
+                    <p class="eyebrow">Acesso interno</p>
+                    <h1>Nexora CRM</h1>
+                    <p class="hero__copy">Entre com seu usuário e senha para acessar os módulos do CRM.</p>
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="flash">Usuário ou senha inválidos.</div>
+            {% endif %}
+
+            <form method="post" class="form-grid form-grid--single">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="field field--full">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <div class="field field--full">
+                    <button class="button" type="submit">Entrar</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 
 
 class StyledModelForm(forms.ModelForm):
@@ -17,3 +18,8 @@ class StyledModelForm(forms.ModelForm):
             elif isinstance(widget, (forms.DateInput, forms.DateTimeInput)):
                 widget.input_type = "date"
             widget.attrs["class"] = f"{widget.attrs.get('class', '')} {css_class}".strip()
+
+
+class CRMAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(label="Usuario", widget=forms.TextInput(attrs={"class": "input", "placeholder": "Seu usuario"}))
+    password = forms.CharField(label="Senha", widget=forms.PasswordInput(attrs={"class": "input", "placeholder": "Sua senha"}))

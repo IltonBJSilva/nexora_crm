@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -363,3 +364,24 @@ class RoadmapStep(TimeStampedModel):
 
     def __str__(self) -> str:
         return f"Etapa {self.stage}: {self.title}"
+
+
+class UserProfile(TimeStampedModel):
+    class RoleChoices(models.TextChoices):
+        SUPER_ADMIN = "super_admin", "Super Admin"
+        MANAGER = "manager", "Manager"
+        OPERATOR = "operator", "Operator"
+        VIEWER = "viewer", "Viewer"
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile", on_delete=models.CASCADE)
+    role = models.CharField("tipo de usuario", max_length=20, choices=RoleChoices.choices, default=RoleChoices.VIEWER)
+    job_title = models.CharField("cargo", max_length=120, blank=True)
+    notes = models.TextField("observacoes", blank=True)
+
+    class Meta:
+        ordering = ["user__username"]
+        verbose_name = "Perfil de usuario"
+        verbose_name_plural = "Perfis de usuario"
+
+    def __str__(self) -> str:
+        return f"{self.user.username} - {self.get_role_display()}"

@@ -196,3 +196,7 @@ AREA_LABELS = {
 
 def get_entity_config(slug):
     return ENTITY_REGISTRY.get(slug)
+
+
+def permission_codename(model, action):
+    return f"{model._meta.app_label}.{action}_{model._meta.model_name}"

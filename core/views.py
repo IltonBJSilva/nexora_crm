@@ -2,14 +2,17 @@ from collections import defaultdict
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Q, Sum
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DeleteView, TemplateView, UpdateView
+from django.views.generic import DeleteView, RedirectView, TemplateView, UpdateView
 
+from .forms import CRMAuthenticationForm
 from .models import AcademicTask, FinanceEntry, RoadmapStep, StatusChoices, WorkTask
-from .registry import AREA_LABELS, ENTITY_REGISTRY, get_entity_config
+from .registry import AREA_LABELS, ENTITY_REGISTRY, get_entity_config, permission_codename
 
 
 def get_entity_or_404(entity_slug):
@@ -64,6 +67,8 @@ class WorkspaceContextMixin:
     def get_workspace_groups(self):
         grouped = defaultdict(list)
         for slug, config in ENTITY_REGISTRY.items():
+            if not self.request.user.has_perm(permission_codename(config["model"], "view")):
+                continue
             grouped[config["area"]].append(
                 {
                     "slug": slug,
@@ -81,11 +86,35 @@ class WorkspaceContextMixin:
         context["workspace_groups"] = self.get_workspace_groups()
         context["current_entity_slug"] = getattr(self, "entity_slug", None)
         context["current_area_key"] = getattr(self, "entity_config", {}).get("area")
+        context["current_user_role"] = getattr(getattr(self.request.user, "profile", None), "get_role_display", lambda: "Usuario")()
         return context
 
 
-class DashboardView(WorkspaceContextMixin, TemplateView):
+class AuthRedirectView(RedirectView):
+    pattern_name = "dashboard"
+
+    def get_redirect_url(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return reverse("login")
+        return super().get_redirect_url(*args, **kwargs)
+
+
+class CRMLoginView(LoginView):
+    template_name = "auth/login.html"
+    authentication_form = CRMAuthenticationForm
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return reverse("dashboard")
+
+
+class CRMLogoutView(LogoutView):
+    next_page = "login"
+
+
+class DashboardView(LoginRequiredMixin, WorkspaceContextMixin, TemplateView):
     template_name = "dashboard.html"
+    login_url = "login"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -155,16 +184,20 @@ class DashboardView(WorkspaceContextMixin, TemplateView):
         return context
 
 
-class WorkspaceIndexView(WorkspaceContextMixin, TemplateView):
+class WorkspaceIndexView(LoginRequiredMixin, WorkspaceContextMixin, TemplateView):
     template_name = "workspace_index.html"
+    login_url = "login"
 
 
-class EntityListView(WorkspaceContextMixin, TemplateView):
+class EntityListView(LoginRequiredMixin, WorkspaceContextMixin, TemplateView):
     template_name = "entity_list.html"
+    login_url = "login"
 
     def dispatch(self, request, *args, **kwargs):
         self.entity_slug = kwargs["entity_slug"]
         self.entity_config = get_entity_or_404(self.entity_slug)
+        if not request.user.has_perm(permission_codename(self.entity_config["model"], "view")):
+            raise Http404("Modulo nao encontrado.")
         return super().dispatch(request, *args, **kwargs)
 
     def build_search_queryset(self):
@@ -180,6 +213,9 @@ class EntityListView(WorkspaceContextMixin, TemplateView):
         return queryset.filter(search)
 
     def post(self, request, *args, **kwargs):
+        if not request.user.has_perm(permission_codename(self.entity_config["model"], "add")):
+            messages.error(request, "Voce nao tem permissao para criar registros neste modulo.")
+            return HttpResponseRedirect(reverse("entity-list", kwargs={"entity_slug": self.entity_slug}))
         form = self.entity_config["form"](request.POST)
         if form.is_valid():
             form.save()
@@ -198,15 +234,21 @@ class EntityListView(WorkspaceContextMixin, TemplateView):
         context["records"] = build_record_cards(queryset[:30], self.entity_config)
         context["total_records"] = queryset.count()
         context["area_label"] = AREA_LABELS[self.entity_config["area"]]
+        context["can_add"] = self.request.user.has_perm(permission_codename(self.entity_config["model"], "add"))
+        context["can_change"] = self.request.user.has_perm(permission_codename(self.entity_config["model"], "change"))
+        context["can_delete"] = self.request.user.has_perm(permission_codename(self.entity_config["model"], "delete"))
         return context
 
 
-class EntityUpdateView(WorkspaceContextMixin, UpdateView):
+class EntityUpdateView(LoginRequiredMixin, WorkspaceContextMixin, UpdateView):
     template_name = "entity_form.html"
+    login_url = "login"
 
     def dispatch(self, request, *args, **kwargs):
         self.entity_slug = kwargs["entity_slug"]
         self.entity_config = get_entity_or_404(self.entity_slug)
+        if not request.user.has_perm(permission_codename(self.entity_config["model"], "change")):
+            raise Http404("Modulo nao encontrado.")
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -226,12 +268,15 @@ class EntityUpdateView(WorkspaceContextMixin, UpdateView):
         return context
 
 
-class EntityDeleteView(WorkspaceContextMixin, DeleteView):
+class EntityDeleteView(LoginRequiredMixin, WorkspaceContextMixin, DeleteView):
     template_name = "entity_confirm_delete.html"
+    login_url = "login"
 
     def dispatch(self, request, *args, **kwargs):
         self.entity_slug = kwargs["entity_slug"]
         self.entity_config = get_entity_or_404(self.entity_slug)
+        if not request.user.has_perm(permission_codename(self.entity_config["model"], "delete")):
+            raise Http404("Modulo nao encontrado.")
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
