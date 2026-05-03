@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Excluir {{ entity_config.title }} | Nexora CRM{% endblock %}
+
+{% block content %}
+<section class="panel panel--narrow">
+    <div class="panel__header">
+        <div>
+            <p class="eyebrow">Exclusão</p>
+            <h2>Remover {{ object }}</h2>
+        </div>
+    </div>
+    <p>Essa ação remove o registro definitivamente deste módulo.</p>
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button class="button button--danger" type="submit">Excluir</button>
+        <a class="button button--ghost" href="{% url 'entity-list' entity_slug=entity_slug %}">Cancelar</a>
+    </form>
+</section>
+{% endblock %}

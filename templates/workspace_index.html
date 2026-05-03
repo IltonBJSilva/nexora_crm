@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Workspace | Nexora CRM{% endblock %}
+
+{% block content %}
+<section class="hero hero--compact">
+    <div>
+        <p class="eyebrow">Workspace</p>
+        <h1>Todos os módulos do CRM em um só lugar.</h1>
+    </div>
+</section>
+
+{% for group in workspace_groups %}
+    <section class="panel">
+        <div class="panel__header">
+            <div>
+                <p class="eyebrow">{{ group.label }}</p>
+                <h2>Módulos de {{ group.label|lower }}</h2>
+            </div>
+        </div>
+        <div class="module-grid">
+            {% for item in group.items %}
+                <a class="module-card" href="{{ item.url }}">
+                    <span class="module-card__icon">{{ item.icon }}</span>
+                    <strong>{{ item.title }}</strong>
+                    <p>{{ item.description }}</p>
+                    <small>{{ item.count }} registros</small>
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}{{ entity_config.title }} | Nexora CRM{% endblock %}
+
+{% block content %}
+<section class="hero hero--compact">
+    <div>
+        <p class="eyebrow">{{ area_label }}</p>
+        <h1>{{ entity_config.title }}</h1>
+        <p class="hero__copy">{{ entity_config.description }}</p>
+    </div>
+    <div class="hero__actions">
+        <span class="pill">{{ total_records }} registros</span>
+    </div>
+</section>
+
+<section class="split">
+    <article class="panel">
+        <div class="panel__header">
+            <div>
+                <p class="eyebrow">Cadastro</p>
+                <h2>Novo registro</h2>
+            </div>
+        </div>
+        <form method="post" class="form-grid">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field {% if field.name == 'description' or field.name == 'notes' or field.name == 'concept' or field.name == 'example' or field.name == 'learning' or field.name == 'impact' or field.name == 'goal' or field.name == 'insight' %}field--full{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<small class="help">{{ field.help_text }}</small>{% endif %}
+                    {% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}
+                </div>
+            {% endfor %}
+            <div class="field field--full">
+                <button class="button" type="submit">Salvar</button>
+            </div>
+        </form>
+    </article>
+
+    <article class="panel">
+        <div class="panel__header">
+            <div>
+                <p class="eyebrow">Lista</p>
+                <h2>Registros existentes</h2>
+            </div>
+            <form method="get" class="search">
+                <input class="input" type="search" name="q" value="{{ query }}" placeholder="Buscar">
+            </form>
+        </div>
+        <div class="stack">
+            {% for record in records %}
+                <article class="record-card">
+                    <div class="record-card__top">
+                        <strong>{{ record.title }}</strong>
+                        <div class="record-card__actions">
+                            <a class="text-link" href="{% url 'entity-update' entity_slug=entity_slug pk=record.object.pk %}">editar</a>
+                            <a class="text-link text-link--danger" href="{% url 'entity-delete' entity_slug=entity_slug pk=record.object.pk %}">excluir</a>
+                        </div>
+                    </div>
+                    <div class="mini-card__meta">
+                        {% for label, value in record.details %}
+                            <span>{{ label }}: {{ value }}</span>
+                        {% endfor %}
+                    </div>
+                    {% for excerpt in record.excerpts %}
+                        <p>{{ excerpt }}</p>
+                    {% endfor %}
+                </article>
+            {% empty %}
+                <p class="muted">Nenhum registro encontrado.</p>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+{% endblock %}

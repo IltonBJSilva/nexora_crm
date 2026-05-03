@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Nexora CRM{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+    <div class="shell">
+        <aside class="sidebar">
+            <a class="brand" href="{% url 'dashboard' %}">
+                <span class="brand__mark">N</span>
+                <div>
+                    <strong>Nexora CRM</strong>
+                    <small>faculdade . trabalho . pessoal</small>
+                </div>
+            </a>
+            <nav class="nav">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'workspace' %}">Workspace</a>
+                <a href="/admin/">Admin</a>
+            </nav>
+
+            {% for group in workspace_groups %}
+                <section class="sidebar-group">
+                    <h3>{{ group.label }}</h3>
+                    <ul>
+                        {% for item in group.items %}
+                            <li>
+                                <a href="{{ item.url }}">
+                                    <span>{{ item.icon }}</span>
+                                    <span>{{ item.title }}</span>
+                                    <small>{{ item.count }}</small>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endfor %}
+        </aside>
+
+        <main class="main">
+            {% if messages %}
+                <div class="flash-list">
+                    {% for message in messages %}
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
