@@ -79,6 +79,8 @@ class WorkspaceContextMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["workspace_groups"] = self.get_workspace_groups()
+        context["current_entity_slug"] = getattr(self, "entity_slug", None)
+        context["current_area_key"] = getattr(self, "entity_config", {}).get("area")
         return context
 
 

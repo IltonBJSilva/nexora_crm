@@ -6,50 +6,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Nexora CRM{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <script src="{% static 'js/sidebar.js' %}" defer></script>
 </head>
 <body>
     <div class="shell">
         <aside class="sidebar">
-            <a class="brand" href="{% url 'dashboard' %}">
-                <span class="brand__mark">N</span>
-                <div>
-                    <strong>Nexora CRM</strong>
-                    <small>faculdade . trabalho . pessoal</small>
-                </div>
-            </a>
-            <nav class="nav">
-                <a href="{% url 'dashboard' %}">Dashboard</a>
-                <a href="{% url 'workspace' %}">Workspace</a>
-                <a href="/admin/">Admin</a>
-            </nav>
+            <div class="sidebar__inner">
+                <a class="brand" href="{% url 'dashboard' %}">
+                    <span class="brand__mark">N</span>
+                    <div>
+                        <strong>Nexora CRM</strong>
+                        <small>faculdade . trabalho . pessoal</small>
+                    </div>
+                </a>
+                <nav class="nav">
+                    <a class="{% if request.path == '/' %}is-active{% endif %}" href="{% url 'dashboard' %}" data-sidebar-link data-sidebar-label="dashboard">
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="{% if request.path == '/workspace/' or current_entity_slug %}is-active{% endif %}" href="{% url 'workspace' %}" data-sidebar-link data-sidebar-label="workspace">
+                        <span>Workspace</span>
+                    </a>
+                    <a href="/admin/" data-sidebar-link data-sidebar-label="admin">
+                        <span>Admin</span>
+                    </a>
+                </nav>
 
-            {% for group in workspace_groups %}
-                <section class="sidebar-group">
-                    <h3>{{ group.label }}</h3>
-                    <ul>
-                        {% for item in group.items %}
-                            <li>
-                                <a href="{{ item.url }}">
-                                    <span>{{ item.icon }}</span>
-                                    <span>{{ item.title }}</span>
-                                    <small>{{ item.count }}</small>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </section>
-            {% endfor %}
+                <div class="sidebar-search">
+                    <label class="sidebar-search__label" for="sidebar-search">
+                        Buscar na barra lateral
+                        <span class="sidebar-search__hint">Ctrl/⌘ + K</span>
+                    </label>
+                    <input
+                        id="sidebar-search"
+                        class="input sidebar-search__input"
+                        type="search"
+                        placeholder="Buscar módulo ou seção"
+                        autocomplete="off"
+                        data-sidebar-search
+                    >
+                </div>
+
+                {% for group in workspace_groups %}
+                    <details
+                        class="sidebar-group sidebar-group--collapsible"
+                        data-sidebar-group
+                        data-group-label="{{ group.label|lower }}"
+                        {% if current_area_key == group.key or request.path == '/' or request.path == '/workspace/' %}open{% endif %}
+                    >
+                        <summary class="sidebar-group__summary">
+                            <span class="sidebar-group__title">{{ group.label }}</span>
+                            <span class="sidebar-group__chevron"></span>
+                        </summary>
+                        <ul>
+                            {% for item in group.items %}
+                                <li data-sidebar-item>
+                                    <a
+                                        class="{% if current_entity_slug == item.slug %}is-active{% endif %}"
+                                        href="{{ item.url }}"
+                                        data-sidebar-link
+                                        data-sidebar-label="{{ group.label }} {{ item.title }}"
+                                    >
+                                        <span class="sidebar-link__icon">{{ item.icon }}</span>
+                                        <span class="sidebar-link__label">{{ item.title }}</span>
+                                        <small class="sidebar-link__count">{{ item.count }}</small>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                {% endfor %}
+            </div>
         </aside>
 
         <main class="main">
-            {% if messages %}
-                <div class="flash-list">
-                    {% for message in messages %}
-                        <div class="flash">{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            {% block content %}{% endblock %}
+            <div class="main__inner">
+                {% if messages %}
+                    <div class="flash-list">
+                        {% for message in messages %}
+                            <div class="flash">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
         </main>
     </div>
 </body>
