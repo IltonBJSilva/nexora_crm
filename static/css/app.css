@@ -609,6 +609,36 @@ html[data-theme="light"] .sidebar-link__count {
     color: var(--input-placeholder);
 }
 
+select.input {
+    color-scheme: dark;
+}
+
+html[data-theme="light"] select.input {
+    color-scheme: light;
+}
+
+select.input option,
+select.input optgroup {
+    background: #171b22;
+    color: #f5f1eb;
+}
+
+html[data-theme="light"] select.input option,
+html[data-theme="light"] select.input optgroup {
+    background: #fff8ef;
+    color: #2b241d;
+}
+
+input[type="date"].input::-webkit-calendar-picker-indicator {
+    filter: invert(0.86);
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+html[data-theme="light"] input[type="date"].input::-webkit-calendar-picker-indicator {
+    filter: invert(0.18);
+}
+
 .input--textarea {
     min-height: 120px;
     resize: vertical;
