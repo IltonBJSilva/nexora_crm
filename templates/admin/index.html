@@ -1,0 +1,27 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+    <section class="nexora-admin-hero">
+        <div>
+            <p class="nexora-admin-hero__eyebrow">Administracao</p>
+            <h1>Nexora Control Center</h1>
+            <p>Gerencie dados do CRM, cadastros, operacao interna e manutencao da plataforma a partir de um painel mais limpo e objetivo.</p>
+        </div>
+        <div class="nexora-admin-stats">
+            <article>
+                <span>Apps</span>
+                <strong>{{ app_list|length }}</strong>
+            </article>
+            <article>
+                <span>Ambiente</span>
+                <strong>Local</strong>
+            </article>
+            <article>
+                <span>Modo</span>
+                <strong>Admin</strong>
+            </article>
+        </div>
+    </section>
+    {{ block.super }}
+{% endblock %}

@@ -20,6 +20,10 @@ from .models import (
     WorkTask,
 )
 
+admin.site.site_header = "Nexora Control Center"
+admin.site.site_title = "Nexora Admin"
+admin.site.index_title = "Operacao interna do CRM"
+
 
 @admin.register(Discipline)
 class DisciplineAdmin(admin.ModelAdmin):
