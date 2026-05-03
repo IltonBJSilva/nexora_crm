@@ -55,7 +55,15 @@
                         <strong>{{ record.title }}</strong>
                         <div class="record-card__actions">
                             <a class="text-link" href="{% url 'entity-update' entity_slug=entity_slug pk=record.object.pk %}">editar</a>
-                            <a class="text-link text-link--danger" href="{% url 'entity-delete' entity_slug=entity_slug pk=record.object.pk %}">excluir</a>
+                            <button
+                                class="action-link-button text-link text-link--danger"
+                                type="button"
+                                data-delete-trigger
+                                data-delete-url="{% url 'entity-delete' entity_slug=entity_slug pk=record.object.pk %}"
+                                data-delete-label="{{ record.title }}"
+                            >
+                                excluir
+                            </button>
                         </div>
                     </div>
                     <div class="mini-card__meta">
@@ -73,4 +81,21 @@
         </div>
     </article>
 </section>
+
+<dialog class="modal" data-delete-modal>
+    <div class="modal__card">
+        <div class="panel__header">
+            <div>
+                <p class="eyebrow">Exclusão</p>
+                <h2 data-delete-title>Remover registro</h2>
+            </div>
+        </div>
+        <p class="muted">Essa ação remove o item definitivamente deste módulo.</p>
+        <form method="post" data-delete-form class="modal__actions">
+            {% csrf_token %}
+            <button class="button button--danger" type="submit">Excluir</button>
+            <button class="button button--ghost" type="button" data-delete-cancel>Cancelar</button>
+        </form>
+    </div>
+</dialog>
 {% endblock %}

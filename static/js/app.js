@@ -29,4 +29,44 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem(storageKey, nextTheme);
         updateThemeButton(nextTheme);
     });
+
+    const deleteModal = document.querySelector("[data-delete-modal]");
+    const deleteForm = document.querySelector("[data-delete-form]");
+    const deleteTitle = document.querySelector("[data-delete-title]");
+    const deleteCancel = document.querySelector("[data-delete-cancel]");
+    const deleteTriggers = Array.from(document.querySelectorAll("[data-delete-trigger]"));
+
+    if (deleteModal && deleteForm && deleteTitle && deleteTriggers.length) {
+        const closeDeleteModal = () => {
+            deleteModal.close();
+            deleteForm.setAttribute("action", "");
+        };
+
+        deleteTriggers.forEach((trigger) => {
+            trigger.addEventListener("click", () => {
+                deleteForm.setAttribute("action", trigger.dataset.deleteUrl || "");
+                deleteTitle.textContent = `Remover ${trigger.dataset.deleteLabel || "registro"}?`;
+                deleteModal.showModal();
+            });
+        });
+
+        deleteCancel?.addEventListener("click", closeDeleteModal);
+
+        deleteModal.addEventListener("click", (event) => {
+            const bounds = deleteModal.getBoundingClientRect();
+            const clickedOutside =
+                event.clientX < bounds.left ||
+                event.clientX > bounds.right ||
+                event.clientY < bounds.top ||
+                event.clientY > bounds.bottom;
+
+            if (clickedOutside) {
+                closeDeleteModal();
+            }
+        });
+
+        deleteModal.addEventListener("close", () => {
+            deleteForm.setAttribute("action", "");
+        });
+    }
 });
